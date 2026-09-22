@@ -1,0 +1,14 @@
+{% extends "student/layout.html" %}
+{% block title %}My attendance{% endblock %}
+{% block content %}
+<p class="eyebrow">Academic records</p><h1>My attendance</h1>
+<p class="notice">Attendance records are displayed as stored. Attendance percentage is not calculated until attendance-status rules are approved.</p>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Attendance records</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Subject</th><th scope="col">Class</th><th scope="col">Status</th></tr></thead>
+    <tbody>
+    {% for record in records %}<tr><td>{{ record.attendance_date }}</td><td>{{ record.subject_name }} ({{ record.subject_code }})</td><td>{{ record.class_name }} ({{ record.academic_year }})</td><td>{{ record.status }}</td></tr>
+    {% else %}<tr><td class="empty-state" colspan="4">No attendance records have been recorded.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

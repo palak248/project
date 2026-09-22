@@ -1,0 +1,12 @@
+{% extends "admin/layout.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Administration</p><h1>Admin dashboard</h1><p class="lede">Manage the system's core academic records.</p></div></div>
+<div class="summary-grid">
+    <a class="summary-item" href="{{ url_for('admin.students') }}"><strong>{{ counts.student_count }}</strong><span>Students</span></a>
+    <a class="summary-item" href="{{ url_for('admin.teachers') }}"><strong>{{ counts.teacher_count }}</strong><span>Teachers</span></a>
+    <a class="summary-item" href="{{ url_for('admin.classes') }}"><strong>{{ counts.class_count }}</strong><span>Classes</span></a>
+    <a class="summary-item" href="{{ url_for('admin.subjects') }}"><strong>{{ counts.subject_count }}</strong><span>Subjects</span></a>
+    <a class="summary-item" href="{{ url_for('admin.assignments') }}"><strong>{{ counts.assignment_count }}</strong><span>Teacher assignments</span></a>
+</div>
+{% endblock %}

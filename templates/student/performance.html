@@ -1,0 +1,34 @@
+{% extends "student/layout.html" %}
+{% block title %}My performance{% endblock %}
+{% block content %}
+<p class="eyebrow">Academic analysis</p><h1>My performance</h1>
+<p>Overall recorded marks: {{ summary.obtained_marks }} of {{ summary.maximum_marks }} across {{ summary.result_count }} result(s).</p>
+<p class="notice">Subject totals are shown without grades or weighting because those institutional rules are not yet approved.</p>
+<section class="chart-section" aria-labelledby="subject-marks-title">
+    <h2 id="subject-marks-title">Subject-wise marks</h2>
+    <div class="chart-frame"><canvas id="subject-marks-chart" aria-label="Subject-wise marks bar chart"></canvas></div>
+    <p id="subject-marks-empty" class="chart-empty" hidden>No subject marks are available.</p>
+</section>
+<section class="chart-section" aria-labelledby="marks-distribution-title">
+    <h2 id="marks-distribution-title">Recorded marks distribution</h2>
+    <div class="chart-frame chart-frame-small"><canvas id="marks-distribution-chart" aria-label="Recorded marks distribution chart"></canvas></div>
+    <p id="marks-distribution-empty" class="chart-empty" hidden>No recorded marks are available.</p>
+</section>
+<section class="chart-section" aria-labelledby="performance-time-title">
+    <h2 id="performance-time-title">Examination performance over time</h2>
+    <div class="chart-frame"><canvas id="performance-time-chart" aria-label="Examination performance over time line chart"></canvas></div>
+    <p id="performance-time-empty" class="chart-empty" hidden>At least two dated examination results are required for this chart.</p>
+</section>
+<script id="student-subject-data" type="application/json">{{ subjects | tojson }}</script>
+<script id="student-result-data" type="application/json">{{ results | tojson }}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/performance-charts.js') }}"></script>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Subject performance summary</caption>
+    <thead><tr><th scope="col">Subject</th><th scope="col">Recorded results</th><th scope="col">Obtained marks</th><th scope="col">Maximum marks</th></tr></thead>
+    <tbody>
+    {% for subject in subjects %}<tr><td>{{ subject.subject_name }} ({{ subject.subject_code }})</td><td>{{ subject.result_count }}</td><td>{{ subject.obtained_marks }}</td><td>{{ subject.maximum_marks }}</td></tr>
+    {% else %}<tr><td class="empty-state" colspan="4">No subject performance data is available.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

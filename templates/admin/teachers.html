@@ -1,0 +1,18 @@
+{% extends "admin/layout.html" %}
+{% block title %}Teachers{% endblock %}
+{% block content %}
+<div class="page-heading"><h1>Teachers</h1><a class="button" href="{{ url_for('admin.new_teacher') }}">Add teacher</a></div>
+<form class="filter-form" method="get">
+    <label for="teacher-search">Search</label><input id="teacher-search" name="search" value="{{ search }}" placeholder="Name or teacher number">
+    <label for="teacher-status">Status</label><select id="teacher-status" name="status"><option value="all"{% if status == 'all' %} selected{% endif %}>All</option><option value="active"{% if status == 'active' %} selected{% endif %}>Active</option><option value="inactive"{% if status == 'inactive' %} selected{% endif %}>Inactive</option></select>
+    <button type="submit">Filter</button>
+</form>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Teacher records</caption>
+    <thead><tr><th scope="col">Name</th><th scope="col">Teacher number</th><th scope="col">Login</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+    <tbody>
+    {% for teacher in teachers %}<tr><td>{{ teacher.full_name }}</td><td>{{ teacher.teacher_number }}</td><td>{{ teacher.login_identifier }}</td><td>{{ 'Active' if teacher.is_active else 'Inactive' }}</td><td><a href="{{ url_for('admin.edit_teacher', teacher_id=teacher.teacher_id) }}">Edit</a>{% if teacher.is_active %}<form class="inline-form" method="post" action="{{ url_for('admin.deactivate_teacher', teacher_id=teacher.teacher_id) }}"><button type="submit">Deactivate</button></form>{% endif %}</td></tr>
+    {% else %}<tr><td class="empty-state" colspan="5">No teachers found.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

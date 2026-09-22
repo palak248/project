@@ -1,0 +1,12 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ 'Edit teacher' if teacher else 'Add teacher' }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Teachers</p><h1>{{ 'Edit teacher' if teacher else 'Add teacher' }}</h1>
+<form class="record-form" method="post">
+    <label for="full-name">Full name</label><input id="full-name" name="full_name" value="{{ teacher.full_name if teacher else '' }}" autocomplete="name" required>
+    <label for="teacher-number">Teacher number</label><input id="teacher-number" name="teacher_number" value="{{ teacher.teacher_number if teacher else '' }}" required>
+    <label for="login-identifier">Login identifier</label><input id="login-identifier" name="login_identifier" value="{{ teacher.login_identifier if teacher else '' }}" autocomplete="username" required>
+    {% if not teacher %}<label for="password">Temporary password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>{% endif %}
+    <div class="form-actions"><button type="submit">{{ 'Save changes' if teacher else 'Create teacher' }}</button><a href="{{ url_for('admin.teachers') }}">Cancel</a></div>
+</form>
+{% endblock %}

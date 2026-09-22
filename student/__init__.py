@@ -1,0 +1,1 @@
+"""Student read-only routes and data access."""

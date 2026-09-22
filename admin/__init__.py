@@ -1,0 +1,1 @@
+"""Administrator routes and data access."""

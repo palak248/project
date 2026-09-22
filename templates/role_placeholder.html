@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ role }} area</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell status-shell">
+        <section class="status-card" aria-labelledby="role-title">
+            <h1 id="role-title">{{ role }} area</h1>
+            <p>Authentication and authorization are working. Features will be added in later tasks.</p>
+            <form method="post" action="{{ url_for('auth.logout') }}">
+                <button type="submit">Log out</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

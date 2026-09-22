@@ -1,0 +1,11 @@
+{% extends "student/layout.html" %}
+{% block title %}Student dashboard{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Your academic space</p><h1>Student dashboard</h1><p class="lede">Welcome, {{ profile.full_name }}.</p></div></div>
+<div class="summary-grid">
+    <a class="summary-item" href="{{ url_for('student.marks') }}"><strong>{{ summary.result_count }}</strong><span>Recorded results</span></a>
+    <a class="summary-item" href="{{ url_for('student.performance') }}"><strong>{{ summary.subject_count }}</strong><span>Subjects with results</span></a>
+    <a class="summary-item" href="{{ url_for('student.attendance') }}"><strong>{{ summary.attendance_count }}</strong><span>Attendance records</span></a>
+</div>
+<p class="notice">Marks shown are recorded values. Grades and weighted performance are not displayed until the institutional rules are approved.</p>
+{% endblock %}

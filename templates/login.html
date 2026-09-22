@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell auth-shell">
+        <section class="auth-card" aria-labelledby="login-title">
+            <p class="eyebrow">Secure access</p>
+            <h1 id="login-title">Log in</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}<div class="flash-stack" aria-live="polite" aria-atomic="true">
+                    {% for category, message in messages %}<p class="message {{ category }}">{{ message }}</p>{% endfor %}
+                </div>{% endif %}
+            {% endwith %}
+            <form class="record-form" method="post" action="{{ url_for('auth.login') }}">
+                <label for="login_identifier">Login identifier</label>
+                <input id="login_identifier" name="login_identifier" type="text" autocomplete="username" required autofocus>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+                <button type="submit">Log in</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

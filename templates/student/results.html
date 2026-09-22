@@ -1,0 +1,14 @@
+{% extends "student/layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Academic records</p><h1>{{ title }}</h1>
+<div class="table-wrap"><table>
+    <caption class="sr-only">{{ title }}</caption>
+    <thead><tr><th scope="col">Subject</th><th scope="col">Class</th><th scope="col">Assessment</th><th scope="col">Date</th><th scope="col">Obtained marks</th><th scope="col">Maximum marks</th></tr></thead>
+    <tbody>
+    {% for result in results %}
+        <tr><td>{{ result.subject_name }} ({{ result.subject_code }})</td><td>{{ result.class_name }} ({{ result.academic_year }})</td><td>{{ result.title }}</td><td>{{ result.assessment_date or 'Not recorded' }}</td><td>{{ result.obtained_marks }}</td><td>{{ result.max_marks }}</td></tr>
+    {% else %}<tr><td class="empty-state" colspan="6">No results have been recorded.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Application error</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell status-shell">
+        <section class="status-card" aria-labelledby="error-title">
+            <p class="eyebrow">500</p>
+            <h1 id="error-title">Application error</h1>
+            <p>The application could not complete the request.</p>
+            <a class="button" href="{{ url_for('home') }}">Return home</a>
+        </section>
+    </main>
+</body>
+</html>

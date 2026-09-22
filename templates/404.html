@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page not found</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell status-shell">
+        <section class="status-card" aria-labelledby="not-found-title">
+            <p class="eyebrow">404</p>
+            <h1 id="not-found-title">Page not found</h1>
+            <p>The requested page does not exist.</p>
+            <a class="button" href="{{ url_for('home') }}">Return home</a>
+        </section>
+    </main>
+</body>
+</html>

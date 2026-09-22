@@ -1,0 +1,10 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ 'Edit subject' if subject else 'Add subject' }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Subjects</p><h1>{{ 'Edit subject' if subject else 'Add subject' }}</h1>
+<form class="record-form" method="post">
+    <label for="subject-code">Subject code</label><input id="subject-code" name="subject_code" value="{{ subject.subject_code if subject else '' }}" required>
+    <label for="subject-name">Subject name</label><input id="subject-name" name="subject_name" value="{{ subject.subject_name if subject else '' }}" required>
+    <div class="form-actions"><button type="submit">{{ 'Save changes' if subject else 'Create subject' }}</button><a href="{{ url_for('admin.subjects') }}">Cancel</a></div>
+</form>
+{% endblock %}

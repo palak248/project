@@ -1,0 +1,11 @@
+{% extends "student/layout.html" %}
+{% block title %}My profile{% endblock %}
+{% block content %}
+<p class="eyebrow">Personal information</p><h1>My profile</h1>
+<dl class="details-list" aria-label="Student profile information">
+    <dt>Full name</dt><dd>{{ profile.full_name }}</dd>
+    <dt>Student number</dt><dd>{{ profile.student_number }}</dd>
+    <dt>Login identifier</dt><dd>{{ profile.login_identifier }}</dd>
+    <dt>Account status</dt><dd>{{ 'Active' if profile.is_active else 'Inactive' }}</dd>
+</dl>
+{% endblock %}

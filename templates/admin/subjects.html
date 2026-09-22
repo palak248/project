@@ -1,0 +1,10 @@
+{% extends "admin/layout.html" %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<div class="page-heading"><h1>Subjects</h1><a class="button" href="{{ url_for('admin.new_subject') }}">Add subject</a></div>
+<form class="filter-form" method="get"><label for="subject-search">Search</label><input id="subject-search" name="search" value="{{ search }}" placeholder="Code or subject name"><button type="submit">Filter</button></form>
+<div class="table-wrap"><table><caption class="sr-only">Subject records</caption><thead><tr><th scope="col">Code</th><th scope="col">Subject</th><th scope="col">Actions</th></tr></thead><tbody>
+{% for subject in subjects %}<tr><td>{{ subject.subject_code }}</td><td>{{ subject.subject_name }}</td><td><a href="{{ url_for('admin.edit_subject', subject_id=subject.subject_id) }}">Edit</a><form class="inline-form" method="post" action="{{ url_for('admin.delete_subject', subject_id=subject.subject_id) }}"><button type="submit">Delete</button></form></td></tr>
+{% else %}<tr><td class="empty-state" colspan="3">No subjects found.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

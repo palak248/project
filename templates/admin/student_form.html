@@ -1,0 +1,12 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ 'Edit student' if student else 'Add student' }}{% endblock %}
+{% block content %}
+<p class="eyebrow">Students</p><h1>{{ 'Edit student' if student else 'Add student' }}</h1>
+<form class="record-form" method="post">
+    <label for="full-name">Full name</label><input id="full-name" name="full_name" value="{{ student.full_name if student else '' }}" autocomplete="name" required>
+    <label for="student-number">Student number</label><input id="student-number" name="student_number" value="{{ student.student_number if student else '' }}" required>
+    <label for="login-identifier">Login identifier</label><input id="login-identifier" name="login_identifier" value="{{ student.login_identifier if student else '' }}" autocomplete="username" required>
+    {% if not student %}<label for="password">Temporary password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>{% endif %}
+    <div class="form-actions"><button type="submit">{{ 'Save changes' if student else 'Create student' }}</button><a href="{{ url_for('admin.students') }}">Cancel</a></div>
+</form>
+{% endblock %}
