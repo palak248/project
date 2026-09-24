@@ -1,0 +1,24 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Marks: {{ assessment.title }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><p class="eyebrow">Marks entry</p><h1>{{ assessment.title }}</h1><p class="lede">{{ assessment.subject_name }} ({{ assessment.subject_code }}) · {{ assessment.class_name }} · Maximum marks: {{ assessment.max_marks }}</p></div>
+    <a class="button" href="{{ url_for('teacher.assessments') }}">Back to assessments</a>
+</div>
+<p class="notice">Enter marks from 0 through {{ assessment.max_marks }}. Leave a blank field unchanged; blank does not mean zero or absent.</p>
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Marks for {{ assessment.title }}</caption>
+        <thead><tr><th scope="col">Student</th><th scope="col">Student number</th><th scope="col">Obtained marks</th></tr></thead>
+        <tbody>
+        {% for student in students %}<tr>
+            <td>{{ student.full_name }}</td>
+            <td>{{ student.student_number }}</td>
+            <td><label class="sr-only" for="marks-{{ student.student_id }}">Marks for {{ student.full_name }}</label><input id="marks-{{ student.student_id }}" name="marks_{{ student.student_id }}" type="number" min="0" max="{{ assessment.max_marks }}" step="0.01" value="{{ student.obtained_marks if student.obtained_marks is not none else '' }}"></td>
+        </tr>{% else %}<tr><td class="empty-state" colspan="3">No students are enrolled in this assessment's class.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+    {% if students %}<button type="submit">Save marks</button>{% endif %}
+</form>
+{% endblock %}

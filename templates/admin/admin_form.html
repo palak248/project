@@ -1,0 +1,14 @@
+{% extends "admin/layout.html" %}
+{% block title %}Add administrator{% endblock %}
+{% block content %}
+<p class="eyebrow">Account management</p>
+<h1>Add administrator</h1>
+<form class="record-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="login-identifier">Login identifier</label>
+    <input id="login-identifier" name="login_identifier" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+    <div class="form-actions"><button type="submit">Create administrator</button><a href="{{ url_for('admin.admins') }}">Cancel</a></div>
+</form>
+{% endblock %}

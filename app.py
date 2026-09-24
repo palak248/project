@@ -3,20 +3,26 @@ import logging
 from flask import Flask, jsonify, render_template
 
 from admin.routes import admin
-from auth.decorators import role_required
 from auth.routes import auth
+from auth.service import csrf_token
 from config import Config
 from student.routes import student
+from teacher.routes import teacher
 
 
 def create_app(config_class=Config):
     app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config.from_object(config_class)
 
+    @app.context_processor
+    def inject_csrf_token():
+        return {"csrf_token": csrf_token}
+
     _configure_logging(app)
     app.register_blueprint(auth)
     app.register_blueprint(admin)
     app.register_blueprint(student)
+    app.register_blueprint(teacher)
 
     @app.get("/")
     def home():
@@ -28,11 +34,6 @@ def create_app(config_class=Config):
             status="ok",
             database_configured=app.config["MYSQL_CONFIGURED"],
         )
-
-    @app.get("/teacher")
-    @role_required("teacher")
-    def teacher_home():
-        return render_template("role_placeholder.html", role="Teacher")
 
     @app.errorhandler(404)
     def not_found(error):

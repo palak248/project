@@ -1,0 +1,30 @@
+{% extends "teacher/layout.html" %}
+{% block title %}{{ class_record.class_name }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><p class="eyebrow">Assigned class</p><h1>{{ class_record.class_name }}</h1><p class="lede">Academic year: {{ class_record.academic_year }}</p></div>
+    <a class="button" href="{{ url_for('teacher.classes') }}">Back to classes</a>
+</div>
+<section class="management-section" aria-labelledby="class-subjects-title">
+    <div class="section-heading"><p class="eyebrow">Your assignments</p><h2 id="class-subjects-title">Assigned subjects</h2></div>
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Subjects assigned in this class</caption>
+        <thead><tr><th scope="col">Subject</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+        {% for assignment in assignments %}<tr><td>{{ assignment.subject_name }} ({{ assignment.subject_code }})</td><td><a href="{{ url_for('teacher.subject_detail', class_subject_id=assignment.class_subject_id) }}">View subject</a></td></tr>
+        {% else %}<tr><td class="empty-state" colspan="2">No subjects are assigned in this class.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+<section class="management-section" aria-labelledby="authorized-students-title">
+    <div class="section-heading"><p class="eyebrow">Access scope</p><h2 id="authorized-students-title">Authorized students</h2></div>
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Students enrolled in this assigned class</caption>
+        <thead><tr><th scope="col">Name</th><th scope="col">Student number</th><th scope="col">Account status</th></tr></thead>
+        <tbody>
+        {% for student in students %}<tr><td>{{ student.full_name }}</td><td>{{ student.student_number }}</td><td>{{ 'Active' if student.is_active else 'Inactive' }}</td></tr>
+        {% else %}<tr><td class="empty-state" colspan="3">No enrolled students are available for this class.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

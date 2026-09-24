@@ -1,10 +1,36 @@
 {% extends "admin/layout.html" %}
 {% block title %}Classes{% endblock %}
 {% block content %}
-<div class="page-heading"><h1>Classes</h1><a class="button" href="{{ url_for('admin.new_class') }}">Add class</a></div>
-<form class="filter-form" method="get"><label for="class-search">Search</label><input id="class-search" name="search" value="{{ search }}" placeholder="Class or academic year"><button type="submit">Filter</button></form>
-<div class="table-wrap"><table><caption class="sr-only">Class records</caption><thead><tr><th scope="col">Class</th><th scope="col">Academic year</th><th scope="col">Actions</th></tr></thead><tbody>
-{% for class_record in classes %}<tr><td>{{ class_record.class_name }}</td><td>{{ class_record.academic_year }}</td><td><a href="{{ url_for('admin.edit_class', class_id=class_record.class_id) }}">Edit</a><form class="inline-form" method="post" action="{{ url_for('admin.delete_class', class_id=class_record.class_id) }}"><button type="submit">Delete</button></form></td></tr>
-{% else %}<tr><td class="empty-state" colspan="3">No classes found.</td></tr>{% endfor %}
-</tbody></table></div>
+<div class="page-heading">
+    <h1>Classes</h1><a class="button" href="{{ url_for('admin.new_class') }}">Add class</a>
+</div>
+<form class="filter-form" method="get"><label for="class-search">Search</label><input id="class-search" name="search"
+        value="{{ search }}" placeholder="Class or academic year"><button type="submit">Filter</button></form>
+<div class="table-wrap">
+    <table>
+        <caption class="sr-only">Class records</caption>
+        <thead>
+            <tr>
+                <th scope="col">Class</th>
+                <th scope="col">Academic year</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class_record in classes %}<tr>
+                <td>{{ class_record.class_name }}</td>
+                <td>{{ class_record.academic_year }}</td>
+                <td><a href="{{ url_for('admin.class_detail', class_id=class_record.class_id) }}">Manage</a>
+                    <a href="{{ url_for('admin.edit_class', class_id=class_record.class_id) }}">Edit</a>
+                    <form class="inline-form" method="post"
+                        action="{{ url_for('admin.delete_class', class_id=class_record.class_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button
+                            type="submit">Delete</button></form>
+                </td>
+            </tr>
+            {% else %}<tr>
+                <td class="empty-state" colspan="3">No classes found.</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

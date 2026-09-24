@@ -1,0 +1,20 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Assigned subjects{% endblock %}
+{% block content %}
+<p class="eyebrow">Teaching workspace</p>
+<h1>Assigned subjects</h1>
+<p class="lede">Each subject below is shown only where you have an active teacher assignment.</p>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Subjects assigned to this teacher</caption>
+    <thead><tr><th scope="col">Class</th><th scope="col">Academic year</th><th scope="col">Subject</th><th scope="col">Students</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+    {% for assignment in assignments %}<tr>
+        <td>{{ assignment.class_name }}</td>
+        <td>{{ assignment.academic_year }}</td>
+        <td>{{ assignment.subject_name }} ({{ assignment.subject_code }})</td>
+        <td>{{ assignment.student_count }}</td>
+        <td><a href="{{ url_for('teacher.subject_detail', class_subject_id=assignment.class_subject_id) }}">View subject</a></td>
+    </tr>{% else %}<tr><td class="empty-state" colspan="5">No subjects are assigned to you.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

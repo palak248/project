@@ -52,6 +52,32 @@ def dashboard_counts():
     return row
 
 
+def list_admins():
+    return _fetch_all(
+        """
+        SELECT user_id, login_identifier, is_active, created_at, updated_at
+        FROM users
+        WHERE role = 'admin'
+        ORDER BY login_identifier
+        """
+    )
+
+
+def create_admin(connection, login_identifier, password_hash):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users (login_identifier, password_hash, role)
+            VALUES (%s, %s, 'admin')
+            """,
+            (login_identifier, password_hash),
+        )
+        return cursor.lastrowid
+    finally:
+        cursor.close()
+
+
 def list_students(search="", status="all"):
     conditions = []
     parameters = []
@@ -144,6 +170,23 @@ def deactivate_student(connection, student_id):
             WHERE s.student_id = %s
             """,
             (student_id,),
+        )
+        return cursor.rowcount
+    finally:
+        cursor.close()
+
+
+def reset_student_password(connection, student_id, password_hash):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            """
+            UPDATE users AS u
+            JOIN students AS s ON s.user_id = u.user_id
+            SET u.password_hash = %s
+            WHERE s.student_id = %s
+            """,
+            (password_hash, student_id),
         )
         return cursor.rowcount
     finally:
@@ -248,6 +291,23 @@ def deactivate_teacher(connection, teacher_id):
         cursor.close()
 
 
+def reset_teacher_password(connection, teacher_id, password_hash):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            """
+            UPDATE users AS u
+            JOIN teachers AS t ON t.user_id = u.user_id
+            SET u.password_hash = %s
+            WHERE t.teacher_id = %s
+            """,
+            (password_hash, teacher_id),
+        )
+        return cursor.rowcount
+    finally:
+        cursor.close()
+
+
 def list_classes(search=""):
     parameters = []
     where_clause = ""
@@ -269,6 +329,67 @@ def list_classes(search=""):
 def get_class(class_id):
     return _fetch_one(
         "SELECT class_id, class_name, academic_year FROM classes WHERE class_id = %s",
+        (class_id,),
+    )
+
+
+def list_class_students(class_id):
+    return _fetch_all(
+        """
+        SELECT s.student_id, s.student_number, s.full_name, u.is_active
+        FROM class_students AS cs
+        JOIN students AS s ON s.student_id = cs.student_id
+        JOIN users AS u ON u.user_id = s.user_id
+        WHERE cs.class_id = %s
+        ORDER BY s.full_name, s.student_number
+        """,
+        (class_id,),
+    )
+
+
+def list_available_students(class_id):
+    return _fetch_all(
+        """
+        SELECT s.student_id, s.student_number, s.full_name
+        FROM students AS s
+        JOIN users AS u ON u.user_id = s.user_id
+        WHERE u.is_active = TRUE
+          AND NOT EXISTS (
+              SELECT 1
+              FROM class_students AS enrolled
+              WHERE enrolled.class_id = %s AND enrolled.student_id = s.student_id
+          )
+        ORDER BY s.full_name, s.student_number
+        """,
+        (class_id,),
+    )
+
+
+def list_class_subjects(class_id):
+    return _fetch_all(
+        """
+        SELECT cs.class_subject_id, s.subject_id, s.subject_code, s.subject_name
+        FROM class_subjects AS cs
+        JOIN subjects AS s ON s.subject_id = cs.subject_id
+        WHERE cs.class_id = %s
+        ORDER BY s.subject_name, s.subject_code
+        """,
+        (class_id,),
+    )
+
+
+def list_available_subjects(class_id):
+    return _fetch_all(
+        """
+        SELECT s.subject_id, s.subject_code, s.subject_name
+        FROM subjects AS s
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM class_subjects AS existing
+            WHERE existing.class_id = %s AND existing.subject_id = s.subject_id
+        )
+        ORDER BY s.subject_name, s.subject_code
+        """,
         (class_id,),
     )
 
@@ -305,6 +426,94 @@ def delete_class(connection, class_id):
     cursor = connection.cursor()
     try:
         cursor.execute("DELETE FROM classes WHERE class_id = %s", (class_id,))
+        return cursor.rowcount
+    finally:
+        cursor.close()
+
+
+def enroll_student(connection, class_id, student_id):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO class_students (class_id, student_id) VALUES (%s, %s)",
+            (class_id, student_id),
+        )
+        return cursor.rowcount
+    finally:
+        cursor.close()
+
+
+def remove_student_from_class(connection, class_id, student_id):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT EXISTS (
+                SELECT 1
+                FROM assessment_results AS ar
+                JOIN assessments AS a ON a.assessment_id = ar.assessment_id
+                JOIN class_subjects AS cs ON cs.class_subject_id = a.class_subject_id
+                WHERE cs.class_id = %s AND ar.student_id = %s
+                UNION ALL
+                SELECT 1
+                FROM attendance AS att
+                JOIN class_subjects AS cs ON cs.class_subject_id = att.class_subject_id
+                WHERE cs.class_id = %s AND att.student_id = %s
+            )
+            """,
+            (class_id, student_id, class_id, student_id),
+        )
+        if cursor.fetchone()[0]:
+            return -1
+        cursor.execute(
+            "DELETE FROM class_students WHERE class_id = %s AND student_id = %s",
+            (class_id, student_id),
+        )
+        return cursor.rowcount
+
+    finally:
+        cursor.close()
+
+
+def add_class_subject(connection, class_id, subject_id):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO class_subjects (class_id, subject_id) VALUES (%s, %s)",
+            (class_id, subject_id),
+        )
+        return cursor.lastrowid
+    finally:
+        cursor.close()
+
+
+def remove_class_subject(connection, class_id, class_subject_id):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT EXISTS (
+                SELECT 1 FROM teacher_class_subjects
+                WHERE class_subject_id = %s
+                UNION ALL
+                SELECT 1 FROM assessments
+                WHERE class_subject_id = %s
+                UNION ALL
+                SELECT 1 FROM attendance
+                WHERE class_subject_id = %s
+            )
+            """,
+            (class_subject_id, class_subject_id, class_subject_id),
+        )
+        if cursor.fetchone()[0]:
+            return -1
+        cursor.execute(
+            """
+            DELETE FROM class_subjects
+            WHERE class_id = %s AND class_subject_id = %s
+            """,
+            (class_id, class_subject_id),
+        )
         return cursor.rowcount
     finally:
         cursor.close()
@@ -383,11 +592,15 @@ def assignment_options():
             ORDER BY t.full_name
             """
         ),
-        "classes": _fetch_all(
-            "SELECT class_id, class_name, academic_year FROM classes ORDER BY academic_year DESC, class_name"
-        ),
-        "subjects": _fetch_all(
-            "SELECT subject_id, subject_code, subject_name FROM subjects ORDER BY subject_name"
+        "class_subjects": _fetch_all(
+            """
+            SELECT cs.class_subject_id, c.class_name, c.academic_year,
+                   s.subject_code, s.subject_name
+            FROM class_subjects AS cs
+            JOIN classes AS c ON c.class_id = cs.class_id
+            JOIN subjects AS s ON s.subject_id = cs.subject_id
+            ORDER BY c.academic_year DESC, c.class_name, s.subject_name
+            """
         ),
     }
 
@@ -412,30 +625,21 @@ def list_assignments():
     )
 
 
-def create_assignment(connection, teacher_id, class_id, subject_id):
+def create_assignment(connection, teacher_id, class_subject_id):
     cursor = connection.cursor()
     try:
         cursor.execute(
             """
             SELECT class_subject_id
             FROM class_subjects
-            WHERE class_id = %s AND subject_id = %s
+            WHERE class_subject_id = %s
             FOR UPDATE
             """,
-            (class_id, subject_id),
+            (class_subject_id,),
         )
         row = cursor.fetchone()
         if row is None:
-            cursor.execute(
-                """
-                INSERT INTO class_subjects (class_id, subject_id)
-                VALUES (%s, %s)
-                """,
-                (class_id, subject_id),
-            )
-            class_subject_id = cursor.lastrowid
-        else:
-            class_subject_id = row[0]
+            return 0
 
         cursor.execute(
             """

@@ -11,6 +11,10 @@ class NotFoundError(LookupError):
     pass
 
 
+class ConflictError(ValueError):
+    pass
+
+
 def _text(value, label, maximum):
     value = value.strip()
     if not value:
@@ -40,6 +44,16 @@ def _account_values(form, include_password):
     return full_name, identifier, password
 
 
+def _new_password(form):
+    password = form.get("password", "")
+    confirmation = form.get("password_confirmation", "")
+    if len(password) < 8:
+        raise ValidationError("Password must contain at least 8 characters.")
+    if password != confirmation:
+        raise ValidationError("New passwords do not match.")
+    return password
+
+
 def validate_student_form(form, include_password):
     full_name, identifier, password = _account_values(form, include_password)
     student_number = _text(form.get("student_number", ""), "Student number", 50)
@@ -50,6 +64,10 @@ def validate_teacher_form(form, include_password):
     full_name, identifier, password = _account_values(form, include_password)
     teacher_number = _text(form.get("teacher_number", ""), "Teacher number", 50)
     return teacher_number, full_name, identifier, password
+
+
+def validate_admin_form(form):
+    return _account_values(form, True)
 
 
 def validate_class_form(form):
@@ -69,8 +87,7 @@ def validate_subject_form(form):
 def validate_assignment_form(form):
     return (
         _id(form.get("teacher_id"), "teacher"),
-        _id(form.get("class_id"), "class"),
-        _id(form.get("subject_id"), "subject"),
+        _id(form.get("class_subject_id"), "class subject"),
     )
 
 
@@ -103,6 +120,16 @@ def deactivate_student(student_id):
             raise NotFoundError("Student was not found.")
 
 
+def reset_student_password(student_id, form):
+    student_id = _id(student_id, "student")
+    password = _new_password(form)
+    with repository.transaction() as connection:
+        if repository.reset_student_password(
+            connection, student_id, generate_password_hash(password)
+        ) == 0:
+            raise NotFoundError("Student was not found.")
+
+
 def create_teacher(form):
     teacher_number, full_name, identifier, password = validate_teacher_form(form, True)
     with repository.transaction() as connection:
@@ -112,6 +139,14 @@ def create_teacher(form):
             full_name,
             identifier,
             generate_password_hash(password),
+        )
+
+
+def create_admin(form):
+    _, identifier, password = validate_admin_form(form)
+    with repository.transaction() as connection:
+        return repository.create_admin(
+            connection, identifier, generate_password_hash(password)
         )
 
 
@@ -129,6 +164,16 @@ def deactivate_teacher(teacher_id):
     teacher_id = _id(teacher_id, "teacher")
     with repository.transaction() as connection:
         if repository.deactivate_teacher(connection, teacher_id) == 0:
+            raise NotFoundError("Teacher was not found.")
+
+
+def reset_teacher_password(teacher_id, form):
+    teacher_id = _id(teacher_id, "teacher")
+    password = _new_password(form)
+    with repository.transaction() as connection:
+        if repository.reset_teacher_password(
+            connection, teacher_id, generate_password_hash(password)
+        ) == 0:
             raise NotFoundError("Teacher was not found.")
 
 
@@ -153,6 +198,42 @@ def delete_class(class_id):
             raise NotFoundError("Class was not found.")
 
 
+def enroll_student(class_id, form):
+    class_id = _id(class_id, "class")
+    student_id = _id(form.get("student_id"), "student")
+    with repository.transaction() as connection:
+        repository.enroll_student(connection, class_id, student_id)
+
+
+def remove_student_from_class(class_id, student_id):
+    class_id = _id(class_id, "class")
+    student_id = _id(student_id, "student")
+    with repository.transaction() as connection:
+        result = repository.remove_student_from_class(connection, class_id, student_id)
+        if result == -1:
+            raise ConflictError("Student cannot be removed while class academic records exist.")
+        if result == 0:
+            raise NotFoundError("Enrollment was not found.")
+
+
+def add_class_subject(class_id, form):
+    class_id = _id(class_id, "class")
+    subject_id = _id(form.get("subject_id"), "subject")
+    with repository.transaction() as connection:
+        return repository.add_class_subject(connection, class_id, subject_id)
+
+
+def remove_class_subject(class_id, class_subject_id):
+    class_id = _id(class_id, "class")
+    class_subject_id = _id(class_subject_id, "class subject")
+    with repository.transaction() as connection:
+        result = repository.remove_class_subject(connection, class_id, class_subject_id)
+        if result == -1:
+            raise ConflictError("Subject cannot be removed while assignments or assessments exist.")
+        if result == 0:
+            raise NotFoundError("Class-subject relationship was not found.")
+
+
 def create_subject(form):
     subject_code, subject_name = validate_subject_form(form)
     with repository.transaction() as connection:
@@ -175,9 +256,12 @@ def delete_subject(subject_id):
 
 
 def create_assignment(form):
-    teacher_id, class_id, subject_id = validate_assignment_form(form)
+    teacher_id, class_subject_id = validate_assignment_form(form)
     with repository.transaction() as connection:
-        return repository.create_assignment(connection, teacher_id, class_id, subject_id)
+        assignment_id = repository.create_assignment(connection, teacher_id, class_subject_id)
+        if assignment_id == 0:
+            raise NotFoundError("The selected class-subject relationship was not found.")
+        return assignment_id
 
 
 def delete_assignment(assignment_id):

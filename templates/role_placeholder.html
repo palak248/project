@@ -11,7 +11,9 @@
         <section class="status-card" aria-labelledby="role-title">
             <h1 id="role-title">{{ role }} area</h1>
             <p>Authentication and authorization are working. Features will be added in later tasks.</p>
+            <p><a class="button" href="{{ url_for('auth.password') }}">Change password</a></p>
             <form method="post" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit">Log out</button>
             </form>
         </section>

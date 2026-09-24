@@ -146,6 +146,35 @@ td {
     margin-left: auto;
 }
 
+.teacher-header {
+    background: #27536b;
+    padding: 1rem 1.5rem;
+}
+
+.teacher-nav {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0 auto;
+    max-width: 64rem;
+}
+
+.teacher-nav a,
+.teacher-nav button {
+    color: #ffffff;
+}
+
+.teacher-nav form {
+    margin-left: auto;
+}
+
+.nav-disabled {
+    color: #b7c9d3;
+    cursor: not-allowed;
+    font-size: 0.95rem;
+}
+
 .details-list {
     background: #ffffff;
     border: 1px solid #d9e2ec;
@@ -191,6 +220,251 @@ td {
 
 .chart-empty {
     color: #52606d;
+}
+
+.management-section {
+    margin-top: 3rem;
+}
+
+.management-section h2 {
+    margin-bottom: 1rem;
+}
+
+.compact-form {
+    max-width: 42rem;
+}
+
+.form-hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.landing-shell {
+    max-width: 72rem;
+    padding-bottom: 3rem;
+}
+
+.landing-hero {
+    align-items: end;
+    background: var(--admin);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    color: #ffffff;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 0.8fr);
+    margin-bottom: 4rem;
+    overflow: hidden;
+    padding: clamp(2rem, 6vw, 5rem);
+    position: relative;
+}
+
+.landing-hero::after {
+    background: var(--accent);
+    content: "";
+    height: 12rem;
+    opacity: 0.9;
+    position: absolute;
+    right: -4rem;
+    top: -5rem;
+    transform: rotate(18deg);
+    width: 12rem;
+}
+
+.landing-hero-copy,
+.landing-hero-panel {
+    position: relative;
+    z-index: 1;
+}
+
+.landing-hero h1 {
+    color: #ffffff;
+    font-size: 4.5rem;
+    line-height: 0.98;
+    margin: 0.5rem 0 1.25rem;
+    max-width: 11ch;
+}
+
+.landing-hero .lede {
+    color: #dce8ee;
+    max-width: 38rem;
+}
+
+.landing-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.landing-actions .button {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--admin);
+    margin-top: 0;
+}
+
+.landing-actions .button:hover {
+    background: #e8f0f4;
+    border-color: #e8f0f4;
+    color: var(--admin);
+}
+
+.landing-note {
+    color: #dce8ee;
+    font-size: 0.9rem;
+    max-width: 16rem;
+}
+
+.landing-hero-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid var(--accent);
+    padding: 1.25rem;
+}
+
+.panel-kicker,
+.feature-number,
+.role-label {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.landing-hero-panel strong {
+    display: block;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    margin: 0.75rem 0;
+}
+
+.landing-hero-panel p {
+    color: #dce8ee;
+    margin: 0;
+}
+
+.landing-section {
+    margin: 0 auto 4rem;
+    max-width: 64rem;
+}
+
+.section-heading h2 {
+    font-size: 2.75rem;
+    margin: 0.35rem 0 1.75rem;
+}
+
+.feature-grid,
+.role-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.feature-item,
+.role-item {
+    border-top: 3px solid var(--line);
+    padding: 1.25rem 0;
+}
+
+.feature-item:nth-child(2) {
+    border-top-color: var(--student);
+}
+
+.feature-item:nth-child(3) {
+    border-top-color: var(--accent);
+}
+
+.feature-item h3 {
+    margin: 1.5rem 0 0.5rem;
+}
+
+.feature-item p,
+.role-item p {
+    color: var(--muted);
+    margin: 0;
+}
+
+.roles-section {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2rem;
+}
+
+.role-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top-width: 4px;
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+}
+
+.role-admin {
+    border-top-color: var(--admin);
+}
+
+.role-teacher {
+    border-top-color: var(--accent);
+}
+
+.role-student {
+    border-top-color: var(--student);
+}
+
+.role-label {
+    color: var(--ink);
+}
+
+.landing-footer {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    font-size: 0.9rem;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 64rem;
+}
+
+.auth-intro,
+.auth-policy {
+    color: var(--muted);
+}
+
+.auth-policy {
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+    margin: 1.5rem 0 0;
+    padding-top: 1rem;
+}
+
+.back-link {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.password-field {
+    align-items: stretch;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.password-field input {
+    margin-top: 0;
+}
+
+.password-toggle {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--admin);
+    flex: 0 0 auto;
+    margin-top: 0;
+}
+
+.password-toggle:hover {
+    background: #edf3f6;
+    border-color: var(--admin);
+    color: var(--admin);
 }
 
 /* UI refinement layer: presentation only. */
@@ -559,7 +833,8 @@ tbody tr:hover {
     }
 
     .admin-header,
-    .student-header {
+    .student-header,
+    .teacher-header {
         padding: 0.75rem 1rem;
     }
 
@@ -568,7 +843,8 @@ tbody tr:hover {
     }
 
     .admin-nav form,
-    .student-nav form {
+    .student-nav form,
+    .teacher-nav form {
         margin-left: 0;
     }
 
@@ -599,6 +875,31 @@ tbody tr:hover {
     .welcome-card,
     .status-card {
         padding: 1.25rem;
+    }
+
+    .landing-hero {
+        grid-template-columns: 1fr;
+        margin-bottom: 3rem;
+        padding: 2rem 1.25rem;
+    }
+
+    .landing-hero h1 {
+        font-size: 3rem;
+    }
+
+    .feature-grid,
+    .role-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-section {
+        margin-bottom: 3rem;
+    }
+
+    .landing-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
     }
 }
 

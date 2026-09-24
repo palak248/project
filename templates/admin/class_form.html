@@ -3,6 +3,7 @@
 {% block content %}
 <p class="eyebrow">Classes</p><h1>{{ 'Edit class' if class_record else 'Add class' }}</h1>
 <form class="record-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label for="class-name">Class name</label><input id="class-name" name="class_name" value="{{ class_record.class_name if class_record else '' }}" required>
     <label for="academic-year">Academic year</label><input id="academic-year" name="academic_year" value="{{ class_record.academic_year if class_record else '' }}" required>
     <div class="form-actions"><button type="submit">{{ 'Save changes' if class_record else 'Create class' }}</button><a href="{{ url_for('admin.classes') }}">Cancel</a></div>

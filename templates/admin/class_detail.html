@@ -1,0 +1,58 @@
+{% extends "admin/layout.html" %}
+{% block title %}{{ class_record.class_name }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Class structure</p>
+        <h1>{{ class_record.class_name }}</h1>
+        <p class="lede">Academic year: {{ class_record.academic_year }}</p>
+    </div>
+    <a class="button" href="{{ url_for('admin.classes') }}">Back to classes</a>
+</div>
+
+<section class="management-section" aria-labelledby="subjects-title">
+    <div class="section-heading"><p class="eyebrow">Class-subject relationships</p><h2 id="subjects-title">Subjects in this class</h2></div>
+    <form class="record-form compact-form" method="post" action="{{ url_for('admin.add_class_subject', class_id=class_record.class_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="subject-id">Add subject</label>
+        <select id="subject-id" name="subject_id" required>
+            <option value="">Select subject</option>
+            {% for subject in subject_options %}<option value="{{ subject.subject_id }}">{{ subject.subject_name }} ({{ subject.subject_code }})</option>{% endfor %}
+        </select>
+        <button type="submit">Add subject to class</button>
+    </form>
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Subjects in {{ class_record.class_name }}</caption>
+        <thead><tr><th scope="col">Code</th><th scope="col">Subject</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+        {% for class_subject in class_subjects %}<tr>
+            <td>{{ class_subject.subject_code }}</td><td>{{ class_subject.subject_name }}</td>
+            <td><form class="inline-form" method="post" action="{{ url_for('admin.remove_class_subject', class_id=class_record.class_id, class_subject_id=class_subject.class_subject_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Remove</button></form></td>
+        </tr>{% else %}<tr><td class="empty-state" colspan="3">No subjects have been added to this class.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+
+<section class="management-section" aria-labelledby="students-title">
+    <div class="section-heading"><p class="eyebrow">Student enrollment</p><h2 id="students-title">Students in this class</h2></div>
+    <form class="record-form compact-form" method="post" action="{{ url_for('admin.enroll_student', class_id=class_record.class_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="student-id">Enroll student</label>
+        <select id="student-id" name="student_id" required>
+            <option value="">Select student</option>
+            {% for student in student_options %}<option value="{{ student.student_id }}">{{ student.full_name }} ({{ student.student_number }})</option>{% endfor %}
+        </select>
+        <button type="submit">Enroll student</button>
+    </form>
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Students enrolled in {{ class_record.class_name }}</caption>
+        <thead><tr><th scope="col">Name</th><th scope="col">Student number</th><th scope="col">Account status</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+        {% for student in students %}<tr>
+            <td>{{ student.full_name }}</td><td>{{ student.student_number }}</td><td>{{ 'Active' if student.is_active else 'Inactive' }}</td>
+            <td><form class="inline-form" method="post" action="{{ url_for('admin.remove_student_from_class', class_id=class_record.class_id, student_id=student.student_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Remove</button></form></td>
+        </tr>{% else %}<tr><td class="empty-state" colspan="4">No students are enrolled in this class.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

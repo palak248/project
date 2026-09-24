@@ -3,13 +3,44 @@
 {% block content %}
 <h1>Teacher assignments</h1>
 <form class="record-form" method="post" action="{{ url_for('admin.create_assignment') }}">
-    <label for="teacher-id">Teacher</label><select id="teacher-id" name="teacher_id" required><option value="">Select teacher</option>{% for teacher in teachers %}<option value="{{ teacher.teacher_id }}">{{ teacher.full_name }} ({{ teacher.teacher_number }})</option>{% endfor %}</select>
-    <label for="class-id">Class</label><select id="class-id" name="class_id" required><option value="">Select class</option>{% for class_record in classes %}<option value="{{ class_record.class_id }}">{{ class_record.class_name }} ({{ class_record.academic_year }})</option>{% endfor %}</select>
-    <label for="subject-id">Subject</label><select id="subject-id" name="subject_id" required><option value="">Select subject</option>{% for subject in subjects %}<option value="{{ subject.subject_id }}">{{ subject.subject_name }} ({{ subject.subject_code }})</option>{% endfor %}</select>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <p class="form-hint">Add a subject to a class from the class management page before assigning a teacher.</p>
+    <label for="teacher-id">Teacher</label><select id="teacher-id" name="teacher_id" required>
+        <option value="">Select teacher</option>{% for teacher in teachers %}<option value="{{ teacher.teacher_id }}">{{
+            teacher.full_name }} ({{ teacher.teacher_number }})</option>{% endfor %}
+    </select>
+    <label for="class-subject-id">Class and subject</label><select id="class-subject-id" name="class_subject_id" required>
+        <option value="">Select class and subject</option>{% for class_subject in class_subjects %}<option value="{{ class_subject.class_subject_id }}">{{ class_subject.class_name }} ({{ class_subject.academic_year }}) - {{ class_subject.subject_name }} ({{ class_subject.subject_code }})</option>{% endfor %}
+    </select>
     <button type="submit">Assign teacher</button>
 </form>
-<div class="table-wrap"><table><caption class="sr-only">Teacher assignments</caption><thead><tr><th scope="col">Teacher</th><th scope="col">Class</th><th scope="col">Subject</th><th scope="col">Action</th></tr></thead><tbody>
-{% for assignment in assignments %}<tr><td>{{ assignment.teacher_name }}</td><td>{{ assignment.class_name }} ({{ assignment.academic_year }})</td><td>{{ assignment.subject_name }} ({{ assignment.subject_code }})</td><td><form method="post" action="{{ url_for('admin.delete_assignment', assignment_id=assignment.assignment_id) }}"><button type="submit">Remove</button></form></td></tr>
-{% else %}<tr><td class="empty-state" colspan="4">No teacher assignments found.</td></tr>{% endfor %}
-</tbody></table></div>
+<div class="table-wrap">
+    <table>
+        <caption class="sr-only">Teacher assignments</caption>
+        <thead>
+            <tr>
+                <th scope="col">Teacher</th>
+                <th scope="col">Class</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}<tr>
+                <td>{{ assignment.teacher_name }}</td>
+                <td>{{ assignment.class_name }} ({{ assignment.academic_year }})</td>
+                <td>{{ assignment.subject_name }} ({{ assignment.subject_code }})</td>
+                <td>
+                    <form method="post"
+                        action="{{ url_for('admin.delete_assignment', assignment_id=assignment.assignment_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit">Remove</button></form>
+                </td>
+            </tr>
+            {% else %}<tr>
+                <td class="empty-state" colspan="4">No teacher assignments found.</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

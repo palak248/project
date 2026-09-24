@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell auth-shell">
+        <section class="auth-card" aria-labelledby="register-title">
+            <a class="back-link" href="{{ url_for('home') }}">&larr; Back to home</a>
+            <p class="eyebrow">Student account</p>
+            <h1 id="register-title">Register as a student</h1>
+            <p class="auth-intro">Create a student account using your student identity and login details.</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}<div class="flash-stack" aria-live="polite" aria-atomic="true">
+                    {% for category, message in messages %}<p class="message {{ category }}">{{ message }}</p>{% endfor %}
+                </div>{% endif %}
+            {% endwith %}
+            <form class="record-form" method="post" action="{{ url_for('auth.register') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label for="full-name">Full name</label>
+                <input id="full-name" name="full_name" autocomplete="name" required>
+                <label for="student-number">Student number</label>
+                <input id="student-number" name="student_number" required>
+                <label for="login-identifier">Login identifier</label>
+                <input id="login-identifier" name="login_identifier" autocomplete="username" required>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+                <label for="password-confirmation">Confirm password</label>
+                <input id="password-confirmation" name="password_confirmation" type="password" minlength="8" autocomplete="new-password" required>
+                <button type="submit">Create student account</button>
+            </form>
+            <p class="auth-policy">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+        </section>
+    </main>
+</body>
+</html>

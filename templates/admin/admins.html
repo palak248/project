@@ -1,0 +1,13 @@
+{% extends "admin/layout.html" %}
+{% block title %}Administrators{% endblock %}
+{% block content %}
+<div class="page-heading"><h1>Administrators</h1><a class="button" href="{{ url_for('admin.new_admin') }}">Add administrator</a></div>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Administrator accounts</caption>
+    <thead><tr><th scope="col">Login identifier</th><th scope="col">Status</th><th scope="col">Created</th></tr></thead>
+    <tbody>
+    {% for administrator in admins %}<tr><td>{{ administrator.login_identifier }}</td><td>{{ 'Active' if administrator.is_active else 'Inactive' }}</td><td>{{ administrator.created_at }}</td></tr>
+    {% else %}<tr><td class="empty-state" colspan="3">No administrator accounts found.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

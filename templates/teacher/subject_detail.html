@@ -1,0 +1,19 @@
+{% extends "teacher/layout.html" %}
+{% block title %}{{ subject.subject_name }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><p class="eyebrow">Assigned subject</p><h1>{{ subject.subject_name }}</h1><p class="lede">{{ subject.subject_code }} · {{ subject.class_name }} · {{ subject.academic_year }}</p></div>
+    <div><a class="button" href="{{ url_for('teacher.subject_assessments', class_subject_id=subject.class_subject_id) }}">Manage assessments</a><a class="button" href="{{ url_for('teacher.subject_attendance', class_subject_id=subject.class_subject_id) }}">Manage attendance</a><a href="{{ url_for('teacher.subjects') }}">Back to subjects</a></div>
+</div>
+<section class="management-section" aria-labelledby="subject-students-title">
+    <div class="section-heading"><p class="eyebrow">Access scope</p><h2 id="subject-students-title">Authorized students</h2></div>
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Students enrolled in this assigned subject's class</caption>
+        <thead><tr><th scope="col">Name</th><th scope="col">Student number</th><th scope="col">Account status</th></tr></thead>
+        <tbody>
+        {% for student in students %}<tr><td>{{ student.full_name }}</td><td>{{ student.student_number }}</td><td>{{ 'Active' if student.is_active else 'Inactive' }}</td></tr>
+        {% else %}<tr><td class="empty-state" colspan="3">No enrolled students are available for this subject.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

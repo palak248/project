@@ -13,6 +13,7 @@
             <h1 id="denied-title">Access denied</h1>
             <p>Your account does not have permission to access this page.</p>
             <form method="post" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit">Log out</button>
             </form>
         </section>

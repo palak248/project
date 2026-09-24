@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>First administrator setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell auth-shell">
+        <section class="auth-card" aria-labelledby="setup-title">
+            <a class="back-link" href="{{ url_for('auth.login') }}">&larr; Back to login</a>
+            <p class="eyebrow">First-run setup</p>
+            <h1 id="setup-title">Create the first administrator</h1>
+            <p class="auth-intro">This one-time setup is available only while no administrator account exists.</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}<div class="flash-stack" aria-live="polite" aria-atomic="true">
+                    {% for category, message in messages %}<p class="message {{ category }}">{{ message }}</p>{% endfor %}
+                </div>{% endif %}
+            {% endwith %}
+            <form class="record-form" method="post" action="{{ url_for('auth.setup') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label for="login_identifier">Login identifier</label>
+                <input id="login_identifier" name="login_identifier" type="text" autocomplete="username" required autofocus>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+
+                <label for="password_confirmation">Confirm password</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" required>
+
+                <button type="submit">Create administrator</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

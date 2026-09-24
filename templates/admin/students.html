@@ -22,7 +22,8 @@
             <td>{{ student.full_name }}</td><td>{{ student.student_number }}</td><td>{{ student.login_identifier }}</td>
             <td>{{ 'Active' if student.is_active else 'Inactive' }}</td>
             <td><a href="{{ url_for('admin.edit_student', student_id=student.student_id) }}">Edit</a>
-                {% if student.is_active %}<form class="inline-form" method="post" action="{{ url_for('admin.deactivate_student', student_id=student.student_id) }}"><button type="submit">Deactivate</button></form>{% endif %}
+                <a href="{{ url_for('admin.reset_student_password', student_id=student.student_id) }}">Reset password</a>
+                {% if student.is_active %}<form class="inline-form" method="post" action="{{ url_for('admin.deactivate_student', student_id=student.student_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Deactivate</button></form>{% endif %}
             </td>
         </tr>
     {% else %}<tr><td class="empty-state" colspan="5">No students found.</td></tr>{% endfor %}

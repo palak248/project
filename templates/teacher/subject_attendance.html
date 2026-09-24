@@ -1,0 +1,32 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Attendance: {{ subject.subject_name }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><p class="eyebrow">Attendance management</p><h1>{{ subject.subject_name }}</h1><p class="lede">{{ subject.subject_code }} · {{ subject.class_name }} · {{ subject.academic_year }}</p></div>
+    <a class="button" href="{{ url_for('teacher.attendance') }}">Back to attendance</a>
+</div>
+<p class="notice">Status values are stored as entered because the current database does not define an approved attendance vocabulary. Attendance percentage is not calculated.</p>
+<form class="record-form compact-form" method="get">
+    <label for="attendance-date">Attendance date</label>
+    <input id="attendance-date" name="attendance_date" type="date" value="{{ attendance_date }}" required>
+    <button type="submit">Load students</button>
+</form>
+{% if attendance_date %}
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="attendance_date" value="{{ attendance_date }}">
+    <div class="table-wrap"><table>
+        <caption class="sr-only">Attendance for {{ attendance_date }}</caption>
+        <thead><tr><th scope="col">Student</th><th scope="col">Student number</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+        {% for student in students %}<tr>
+            <td>{{ student.full_name }}</td>
+            <td>{{ student.student_number }}</td>
+            <td><label class="sr-only" for="status-{{ student.student_id }}">Attendance status for {{ student.full_name }}</label><input id="status-{{ student.student_id }}" name="status_{{ student.student_id }}" value="{{ student.status if student.status is not none else '' }}" maxlength="20"></td>
+        </tr>{% else %}<tr><td class="empty-state" colspan="3">No enrolled students are available for this subject.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+    {% if students %}<button type="submit">Save attendance</button>{% endif %}
+</form>
+{% endif %}
+{% endblock %}

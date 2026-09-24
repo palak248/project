@@ -3,20 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Administration{% endblock %}</title>
+    <title>{% block title %}Teacher area{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header class="admin-header site-header">
-        <nav class="admin-nav" aria-label="Primary navigation">
-            <a class="brand" href="{{ url_for('admin.dashboard') }}">Student Performance</a>
-            <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('admin.admins') }}">Administrators</a>
-            <a href="{{ url_for('admin.students') }}">Students</a>
-            <a href="{{ url_for('admin.teachers') }}">Teachers</a>
-            <a href="{{ url_for('admin.classes') }}">Classes</a>
-            <a href="{{ url_for('admin.subjects') }}">Subjects</a>
-            <a href="{{ url_for('admin.assignments') }}">Assignments</a>
+    <header class="teacher-header site-header">
+        <nav class="teacher-nav" aria-label="Primary navigation">
+            <a class="brand" href="{{ url_for('teacher.dashboard') }}">Teacher workspace</a>
+            <a href="{{ url_for('teacher.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('teacher.classes') }}">Assigned classes</a>
+            <a href="{{ url_for('teacher.subjects') }}">Assigned subjects</a>
+            <a href="{{ url_for('teacher.assessments') }}">Assessments</a>
+            <span class="nav-disabled" aria-disabled="true">Marks</span>
+            <a href="{{ url_for('teacher.attendance') }}">Attendance</a>
             <a href="{{ url_for('auth.password') }}">Change password</a>
             <form method="post" action="{{ url_for('auth.logout') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

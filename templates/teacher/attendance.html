@@ -1,0 +1,21 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<p class="eyebrow">Attendance management</p>
+<h1>Attendance records</h1>
+<p class="lede">Only attendance for your assigned subjects is shown.</p>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Attendance records for assigned subjects</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Class</th><th scope="col">Subject</th><th scope="col">Student</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+    {% for record in records %}<tr>
+        <td>{{ record.attendance_date }}</td>
+        <td>{{ record.class_name }} ({{ record.academic_year }})</td>
+        <td>{{ record.subject_name }} ({{ record.subject_code }})</td>
+        <td>{{ record.full_name }} ({{ record.student_number }})</td>
+        <td>{{ record.status }}</td>
+        <td><a href="{{ url_for('teacher.subject_attendance', class_subject_id=record.class_subject_id, attendance_date=record.attendance_date) }}">Edit date</a></td>
+    </tr>{% else %}<tr><td class="empty-state" colspan="6">No attendance records have been entered for your assignments.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

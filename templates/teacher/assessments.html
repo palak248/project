@@ -1,0 +1,31 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Assessments{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Assessment management</p>
+        <h1>{{ 'Assessments for ' + subject.subject_name if subject else 'Assessments' }}</h1>
+        <p class="lede">Create and manage assessments only for your assigned subjects.</p>
+    </div>
+    {% if subject %}<a class="button" href="{{ url_for('teacher.new_assessment', class_subject_id=subject.class_subject_id) }}">Create assessment</a>{% endif %}
+</div>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Teacher assessments</caption>
+    <thead><tr><th scope="col">Class</th><th scope="col">Subject</th><th scope="col">Type</th><th scope="col">Title</th><th scope="col">Date</th><th scope="col">Maximum marks</th><th scope="col">Results</th><th scope="col">Actions</th></tr></thead>
+    <tbody>
+    {% for assessment in assessments %}<tr>
+        <td>{{ assessment.class_name }} ({{ assessment.academic_year }})</td>
+        <td>{{ assessment.subject_name }} ({{ assessment.subject_code }})</td>
+        <td>{{ assessment.assessment_type|title }}</td>
+        <td>{{ assessment.title }}</td>
+        <td>{{ assessment.assessment_date or 'Not recorded' }}</td>
+        <td>{{ assessment.max_marks }}</td>
+        <td>{{ assessment.result_count }} / {{ assessment.student_count }}</td>
+        <td><a href="{{ url_for('teacher.assessment_marks', assessment_id=assessment.assessment_id) }}">Enter marks</a>
+            <a href="{{ url_for('teacher.edit_assessment', assessment_id=assessment.assessment_id) }}">Edit</a>
+            <form class="inline-form" method="post" action="{{ url_for('teacher.delete_assessment', assessment_id=assessment.assessment_id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Delete</button></form>
+        </td>
+    </tr>{% else %}<tr><td class="empty-state" colspan="8">No assessments are available for your assignments.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

@@ -9,23 +9,33 @@
 <body>
     <main class="page-shell auth-shell">
         <section class="auth-card" aria-labelledby="login-title">
+            <a class="back-link" href="{{ url_for('home') }}">&larr; Back to home</a>
             <p class="eyebrow">Secure access</p>
             <h1 id="login-title">Log in</h1>
+            <p class="auth-intro">Use your authorized account to access the academic workspace.</p>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}<div class="flash-stack" aria-live="polite" aria-atomic="true">
                     {% for category, message in messages %}<p class="message {{ category }}">{{ message }}</p>{% endfor %}
                 </div>{% endif %}
             {% endwith %}
             <form class="record-form" method="post" action="{{ url_for('auth.login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="login_identifier">Login identifier</label>
-                <input id="login_identifier" name="login_identifier" type="text" autocomplete="username" required autofocus>
+                <input id="login_identifier" name="login_identifier" type="text" value="{{ login_identifier|default('') }}" autocomplete="username" required autofocus>
 
                 <label for="password">Password</label>
-                <input id="password" name="password" type="password" autocomplete="current-password" required>
+                <div class="password-field">
+                    <input id="password" name="password" type="password" autocomplete="current-password" required>
+                    <button class="password-toggle" type="button" data-password-toggle="password" aria-controls="password" aria-pressed="false">Show</button>
+                </div>
 
                 <button type="submit">Log in</button>
             </form>
+            <p class="auth-policy">Teachers and administrators are created by an administrator.</p>
+            <p><a href="{{ url_for('auth.register') }}">New student? Register here</a></p>
+            {% if setup_available %}<p><a href="{{ url_for('auth.setup') }}">Set up the first administrator</a></p>{% endif %}
         </section>
     </main>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Assigned classes{% endblock %}
+{% block content %}
+<p class="eyebrow">Teaching workspace</p>
+<h1>Assigned classes</h1>
+<p class="lede">Only classes connected to your teacher assignments are shown.</p>
+<div class="table-wrap"><table>
+    <caption class="sr-only">Classes assigned to this teacher</caption>
+    <thead><tr><th scope="col">Class</th><th scope="col">Academic year</th><th scope="col">Subjects</th><th scope="col">Students</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+    {% for class_record in classes %}<tr>
+        <td>{{ class_record.class_name }}</td>
+        <td>{{ class_record.academic_year }}</td>
+        <td>{{ class_record.subject_count }}</td>
+        <td>{{ class_record.student_count }}</td>
+        <td><a href="{{ url_for('teacher.class_detail', class_id=class_record.class_id) }}">View class</a></td>
+    </tr>{% else %}<tr><td class="empty-state" colspan="5">No classes are assigned to you.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

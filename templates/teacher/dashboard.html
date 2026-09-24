@@ -1,0 +1,21 @@
+{% extends "teacher/layout.html" %}
+{% block title %}Teacher dashboard{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Teaching workspace</p>
+        <h1>Teacher dashboard</h1>
+        <p class="lede">Welcome, {{ profile.full_name }}. Here is the academic structure assigned to you.</p>
+    </div>
+</div>
+<div class="summary-grid">
+    <a class="summary-item" href="{{ url_for('teacher.classes') }}"><strong>{{ summary.class_count }}</strong><span>Assigned classes</span></a>
+    <a class="summary-item" href="{{ url_for('teacher.subjects') }}"><strong>{{ summary.subject_count }}</strong><span>Assigned subjects</span></a>
+    <a class="summary-item" href="{{ url_for('teacher.classes') }}"><strong>{{ summary.student_count }}</strong><span>Authorized students</span></a>
+    <a class="summary-item" href="{{ url_for('teacher.subjects') }}"><strong>{{ summary.assignment_count }}</strong><span>Teaching assignments</span></a>
+</div>
+<section class="notice teacher-status" aria-labelledby="workflow-status-title">
+    <h2 id="workflow-status-title">Academic entry workflows</h2>
+    <p>Attendance entry is available for your assigned subjects. Assessments and marks are available through their respective workflows; performance analysis is not implemented yet.</p>
+</section>
+{% endblock %}
