@@ -1,5 +1,6 @@
 import logging
-
+import dotenv
+dotenv.load_dotenv()
 from flask import Flask, jsonify, render_template
 
 from admin.routes import admin
